@@ -28,19 +28,17 @@ private dataStore: {
 // https://xgrommx.github.io/rx-book/content/getting_started_with_rxjs/creating_and_querying_observable_sequences/creating_and_subscribing_to_simple_observable_sequences.html
 constructor() {
 
-this.dataStore = { sharingData: [] };
+  this.dataStore = { sharingData: [] };  
+  this._sharingData = <BehaviorSubject<usersData[]>>new BehaviorSubject([]);
+  
+  this.internalService().subscribe(
+    result => { 
+      if( typeof result['uID'] !== 'undefined'  ){ // MAKE SURE THAT THERE IS SOMETHING IN THE ARRAY
+          this.usersTemplate = result;
+          console.log('next: %s', JSON.stringify( this.usersTemplate ) );
+      }}, error => { // console.log('onError: %s', error );
+    }, () => console.log('onCompleted')); 
 
-this._sharingData = <BehaviorSubject<usersData[]>>new BehaviorSubject([]);
-
-this.internalService().subscribe(
-  result => { 
-    if( typeof result['uID'] !== 'undefined'  ){ // MAKE SURE THAT THERE IS SOMETHING IN THE ARRAY
-      this.usersTemplate = result;
-      console.log('next: %s', JSON.stringify( this.usersTemplate ) )
-    }
-  }, error => { 
-    console.log('onError: %s', error );
-  }, () => console.log('onCompleted')); 
 }
 
 
@@ -111,6 +109,7 @@ let userid = Array('32423423','4564326685423', '25675768', '2344577456');
 
 ngOnDestroy(){
   this._sharingData.unsubscribe();
+  // this.usersTemplate.unsubscribe();  
 }
 
 
